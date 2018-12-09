@@ -1,7 +1,3 @@
 this is the test of git
 hahhahahaha
-<<<<<<< HEAD
 hcvksdnvkclb 
-=======
-hcvksdnvkcla 
->>>>>>> newbranch
