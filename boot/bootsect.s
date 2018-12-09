@@ -18,11 +18,10 @@ begbss:
 .equ ENDSYS,SYSSEG+SYSSIZE
 
 .equ SETUPSIZE,4
-.equ LEN,24
+.equ LEN,23
 
 .equ ROOT_DEV,0x301
 
-.text
 ljmp $BOOTSEG,$_startboot
 
 _startboot:
@@ -155,6 +154,9 @@ _startboot:
  
     root_defined:
         mov %ax,%cs:root_dev
+
+    loop_forever:
+        loop loop_forever
         
         #jmp to the 0x9000
         ljmp $SETUPSEG,$0
