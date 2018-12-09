@@ -1,13 +1,12 @@
 .code16
 
-.global _startboot,begintext,begindata,beginbss,endtext,enddata,endbss
-
+.global _startboot, begtext, begdata, begbss, endtext, enddata, endbss
 .text
-begintext:
+begtext:
 .data
-begindata:
+begdata:
 .bss
-bedinbss:
+begbss:
 .text
 
 .equ BOOTSEG,0x07c0
@@ -18,7 +17,7 @@ bedinbss:
 .equ SYSSIZE,0x3000
 .equ ENDSYS,SYSSEG+SYSSIZE
 
-.equ BOOTSIZE,4
+.equ SETUPSIZE,4
 .equ LEN,24
 
 .equ ROOT_DEV,0x301
@@ -64,8 +63,8 @@ _startboot:
        #the range of stack is 0x900o:0000 -> 0x9000:ff00 
        mov $0xff00,%sp
 
-       loop_forever:
-            jmp loop_forever
+       #loop_forever:
+       #     jmp loop_forever
 
         #       AH = 02
         #AL = number of sectors to read (1-128 dec.)
@@ -86,7 +85,7 @@ _startboot:
      mov $0x0002,%cx
      mov $0x0200,%bx
      mov $0x02,%ah
-     mov $BOOTSIZE,%al
+     mov $SETUPSIZE,%al
      int $0x13
      jnc ok_load_setup
      mov $0x0000,%ax
@@ -140,7 +139,7 @@ _startboot:
         mov %ax,%es
         
         call read_it 
-        call kil_motor
+        call kill_motor
 
         #in this location,I can't understand it
         mov %cs:sector,%bx
@@ -226,7 +225,7 @@ trace: .word 0
             sub sread,%ax
             mov %ax,%cx      #this is to separate the sectors and the bytes
             shl $9,%cx 
-            add $bx,%cx      
+            add %bx,%cx      
 
             jnc ok_read2
             je ok_read2
@@ -264,11 +263,11 @@ trace: .word 0
            xor %bx,%bx
            jmp rp_read
   
-       read_trace:
-           push ax
-           push bx
-           push cx
-           push dx
+       read_track:
+           push %ax
+           push %bx
+           push %cx
+           push %dx
            mov trace,%dx  #trace
            mov sread,%cx  #the sectors which has been read in the trace now
            inc %cx
@@ -281,26 +280,26 @@ trace: .word 0
            mov $0x02,%ah
            int $0x13
            jc bad_manage
-           pop dx
-           pop cx
-           pop bx
-           pop ax
+           pop %dx
+           pop %cx
+           pop %bx
+           pop %ax
 
        bad_manage:
            mov $0,%ax
            mov $0,%dx
            int $0x13
-           pop dx
-           pop cx
-           pop bx
-           pop ax
+           pop %dx
+           pop %cx
+           pop %bx
+           pop %ax
 
        kill_motor:   #close the motor 
-           push dx
+           push %dx
            mov $0x3f7,%dx
            mov $0,%al
            outsb 
-           pop dx
+           pop %dx
            ret
 
 _string:
@@ -325,4 +324,3 @@ endtext:
 enddata:
 .bss
 endbss:
-
