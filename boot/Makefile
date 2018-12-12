@@ -2,7 +2,7 @@ make:Image
 
 .PHONY: clean qemu-run
 
-objects = demo.o bootsect.o
+objects = setup.o bootsect.o
 
 qemu-run:Image
 	- @qemu-system-i386 -boot a -fda Image
@@ -14,17 +14,17 @@ bootsect:bootsect.o
 	- @ld -T ld_boot.ld bootsect.o -o bootsect
 	- @objcopy -O binary -j .text bootsect
 
-demo.o:demo.s
-	- @as --32 -o demo.o demo.s
+setup.o:setup.s
+	- @as --32 -o setup.o setup.s
 
-demo:demo.o
-	- @ld -T  ld_boot.ld demo.o -o demo
-	- @objcopy -O binary -j .text demo
+setup:setup.o
+	- @ld -T  ld_boot.ld setup.o -o setup
+	- @objcopy -O binary -j .text setup
 
-Image:bootsect
+Image:bootsect setup
 	- @dd if=bootsect of=Image count=1 bs=512
-	#- @dd if=demo of=Image count=4 bs=512 seek=1
+	- @dd if=setup of=Image count=4 bs=512 seek=1
 	- @echo "Img have been done"
 clean:
-	- @rm -f bootsect demo Image
+	- @rm -f bootsect setup Image
 	- @rm -f $(objects)
