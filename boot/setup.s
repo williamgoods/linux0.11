@@ -160,7 +160,12 @@ setup_start:
 
      #below wo can enable the A20 which make the accessed address from
      #2^20=1M  --> 2^32=4GB
-     
+     #in al, 0x92
+     #or al, 2
+     #out 0x92, al 
+     in $0x92,%al
+     or $0x02,%al
+     out %al,$0x92
 
      #set the 8259
      
