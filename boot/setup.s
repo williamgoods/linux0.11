@@ -117,6 +117,7 @@ setup_start:
     mov $0x00,%ax
     mov $0x10,%cx
     rep
+    #stosb stosw stosd are to save al ax and eax to the memory unit of es:di
     stosb
 
     is_disk1:
@@ -141,6 +142,21 @@ setup_start:
         mov %ax,%ds
         lgdt gdt_48
         lidt idt_48
+
+    #this is used to read the hd0 and hd1
+    read_hd:
+    mov $0x0000,%ax
+    mov %ax,%ds
+    #load the address of %dx to the si
+    mov %dx,%si
+    mov $INITSEG,%ax
+    mov %ax,%es
+    mov %bx,%di
+    #transform about 16 bytes
+    mov $0x10,%cx
+    rep
+    movsb
+    ret
 
      #below wo can enable the A20 which make the accessed address from
      #2^20=1M  --> 2^32=4GB
@@ -182,22 +198,6 @@ setup_start:
    #set a empty table about interrupt table
         .word 0
         .word 0,0
-   
-    
-    #this is used to read the hd0 and hd1
-    read_hd:
-    mov $0x0000,%ax
-    mov %ax,%ds
-    #load the address of %dx to the si
-    mov %dx,%si
-    mov $INITSEG,%ax
-    mov %ax,%es
-    mov %bx,%di
-    #transform about 16 bytes
-    mov $0x10,%cx
-    rep
-    movsb
-    ret
 
 .text
 endtext:
