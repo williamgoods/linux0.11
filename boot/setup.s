@@ -4,7 +4,7 @@
 .equ SYSSEG,0x1000
 .equ SETUPSEG,0x9020
 
-.global _start,begtext,begdata,begbss,endtext,enddata,endbss
+.global setup_start,begtext,begdata,begbss,endtext,enddata,endbss
 
 .text
 begtext:
