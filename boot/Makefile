@@ -5,7 +5,7 @@ make:Image
 objects = setup.o bootsect.o
 
 qemu-run:Image
-	- @qemu-system-i386 -boot a -fda Image
+	- @qemu-system-i386 -curses -boot a -fda Image
 
 bootsect.o:bootsect.s
 	- @as --32 -o bootsect.o bootsect.s
